@@ -68,6 +68,9 @@
     .accessory-item input {
       margin-right: 0.3rem;
     }
+    .accessory-item input:disabled {
+      cursor: not-allowed;
+    }
     .summary {
       margin-top: 1.5rem;
       padding: 1rem;
@@ -87,7 +90,7 @@
       overflow-x: auto;
       font-size: 0.85rem;
     }
-    button[type="submit"] {
+    button[type="submit"], button[type="button"] {
       width: auto;
       padding: 0.6rem 1.2rem;
       background: #111827;
@@ -97,17 +100,164 @@
       cursor: pointer;
       font-weight: 600;
       margin-top: 0.5rem;
+      margin-right: 0.5rem;
     }
-    button[type="submit"]:hover {
+    button[type="submit"]:hover, button[type="button"]:hover {
       opacity: 0.9;
+    }
+    button[type="button"] {
+      background: #6b7280;
+    }
+    .included-box {
+      margin: 0.5rem 0;
+      padding: 0.75rem;
+      background: #e8f5e9;
+      border-left: 4px solid #4caf50;
+      border-radius: 6px;
+      font-size: 0.85rem;
+    }
+    .included-box strong {
+      color: #2e7d32;
+    }
+    .included-box ul {
+      margin: 0.3rem 0 0 1.2rem;
+      padding: 0;
+    }
+    .included-box li {
+      margin: 0.2rem 0;
+    }
+    .helmet-preview-container {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin: 1rem 0;
+      text-align: center;
+    }
+    #helmetPreview {
+      max-width: 400px;
+      height: auto;
+      margin: 0 auto;
+      filter: drop-shadow(0 6px 12px rgba(0,0,0,0.2));
+    }
+    .preview-labels {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 1rem;
+    }
+    .preview-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+    }
+    .preview-color-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid #333;
+    }
+    .popular-combos {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+    }
+    .combo-btn {
+      background: white;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      padding: 0.75rem 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .combo-btn:hover {
+      border-color: #2196f3;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .combo-btn.active {
+      border-color: #2196f3;
+      background: #e3f2fd;
+      box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.2);
+    }
+    .combo-preview {
+      display: flex;
+      gap: 4px;
+    }
+    .combo-color {
+      width: 35px;
+      height: 35px;
+      border-radius: 6px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .combo-btn span {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #333;
+    }
+    .color-explanation {
+      background: #e3f2fd;
+      padding: 0.75rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+      border-left: 4px solid #2196f3;
+    }
+    .color-picker {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+    }
+    .color-option {
+      position: relative;
+      cursor: pointer;
+      border: 3px solid transparent;
+      border-radius: 8px;
+      padding: 0.5rem;
+      text-align: center;
+      transition: all 0.2s ease;
+      background: #f8f9fa;
+    }
+    .color-option:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    .color-option.selected {
+      border-color: #2196f3;
+      background: #e3f2fd;
+      box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.3);
+    }
+    .color-swatch {
+      width: 100%;
+      height: 50px;
+      border-radius: 6px;
+      margin-bottom: 0.3rem;
+      border: 2px solid #ddd;
+    }
+    .color-label {
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: #333;
+      line-height: 1.2;
+    }
+    .color-code {
+      font-size: 0.65rem;
+      color: #666;
+      margin-top: 0.1rem;
     }
   </style>
 </head>
 <body>
   <div class="configurator">
-    <h1>Configurador de casco PROTOS</h1>
+    <h1>Configurador de casco PROTOS®</h1>
     <p class="subtitle">
-      Elige el modelo, talla, colores, visor y accesorios. Solo verás opciones compatibles con cada modelo.
+      Elige el modelo, talla, colores, visor y accesorios. Solo verás opciones compatibles con cada modelo según catálogo oficial 2023-2025.
     </p>
 
     <form id="protos-configurator">
@@ -116,9 +266,8 @@
         <label for="model">Modelo</label>
         <select id="model" name="model" required>
           <option value="">Selecciona un modelo</option>
-          <!-- Se rellena por JS -->
         </select>
-        <small>Define el uso principal: forestal, escalada, industria, etc.</small>
+        <small id="modelDescription">Define el uso principal: forestal, escalada, industria, etc.</small>
       </div>
 
       <!-- TALLA + CASCO BASE -->
@@ -137,23 +286,211 @@
         </div>
       </div>
 
-      <!-- COLORES -->
-      <div class="row">
-        <div class="field">
-          <label for="shellColor">Color casco (shell)</label>
-          <select id="shellColor" name="shellColor" required>
-            <!-- Se rellena por JS -->
-          </select>
-          <small>Color principal del casco.</small>
+      <!-- PREVIEW DEL CASCO -->
+      <div class="field">
+        <label>Vista previa de colores (Imagen de prueba, falta vectorizar imagen)</label>
+        <div class="helmet-preview-container">
+          <svg id="helmetPreview" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <!-- Patrón de malla para visor -->
+              <pattern id="meshPattern" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+                <circle cx="4" cy="4" r="1.2" fill="#666" />
+              </pattern>
+              
+              <!-- Gradientes para profundidad -->
+              <linearGradient id="shellGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#00A859;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#00A859;stop-opacity:0.7" />
+              </linearGradient>
+              
+              <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#555;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#555;stop-opacity:0.8" />
+              </linearGradient>
+              
+              <radialGradient id="earmuffGradient" cx="50%" cy="50%">
+                <stop offset="0%" style="stop-color:#00A859;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#00A859;stop-opacity:0.85" />
+              </radialGradient>
+            </defs>
+            
+            <!-- PARTE POSTERIOR DEL CASCO -->
+            <!-- Protección posterior cuello (accent) -->
+            <path id="neckProtection" d="M 60 190 Q 50 210 55 230 L 85 235 Q 90 215 85 195 Z" 
+                  fill="url(#accentGradient)" stroke="#333" stroke-width="1.5" opacity="0.9" />
+            
+            <!-- Casco posterior base -->
+            <path id="shellMainBack" d="M 50 80 Q 40 120 45 160 Q 50 190 85 195 Q 110 160 115 120 Q 118 80 100 50 Q 75 45 50 80 Z" 
+                  fill="url(#shellGradient)" stroke="#2a2a2a" stroke-width="2" />
+            
+            <!-- Detalle ventilación posterior (accent) -->
+            <ellipse id="ventBack" cx="80" cy="100" rx="12" ry="20" fill="#555" opacity="0.4" />
+            <path d="M 80 85 L 80 115" stroke="#333" stroke-width="1" opacity="0.3" />
+            
+            <!-- PARTE SUPERIOR DEL CASCO -->
+            <!-- Casco principal superior -->
+            <path id="shellMainTop" d="M 100 50 Q 140 35 190 40 Q 250 50 280 85 Q 290 120 285 155 Q 280 180 260 195 L 240 185 Q 255 160 258 130 Q 260 95 240 70 Q 200 50 160 48 Q 120 50 100 50 Z" 
+                  fill="url(#shellGradient)" stroke="#2a2a2a" stroke-width="2" />
+            
+            <!-- Línea de división del casco (accent) -->
+            <path id="shellDivider" d="M 120 60 Q 160 55 200 58 Q 240 65 265 85" 
+                  stroke="#555" stroke-width="4" fill="none" opacity="0.6" />
+            
+            <!-- Detalle frontal superior (accent) -->
+            <path id="frontDetail" d="M 240 70 Q 255 85 260 105" 
+                  stroke="#555" stroke-width="5" fill="none" opacity="0.5" />
+            
+            <!-- LOGO PROTOS -->
+            <text x="140" y="110" font-family="'Arial Black', sans-serif" font-size="22" font-weight="900" 
+                  fill="#2a2a2a" opacity="0.15" letter-spacing="1">PROTOS</text>
+            
+            <!-- Detalle ventilación superior -->
+            <g id="ventilationSlots">
+              <rect x="180" y="75" width="35" height="3" rx="1.5" fill="#555" opacity="0.4" />
+              <rect x="180" y="82" width="35" height="3" rx="1.5" fill="#555" opacity="0.4" />
+              <rect x="180" y="89" width="35" height="3" rx="1.5" fill="#555" opacity="0.4" />
+            </g>
+            
+            <!-- OREJERA (EAR MUFF) -->
+            <g id="earmuffMain">
+              <!-- Base de la orejera -->
+              <ellipse cx="75" cy="185" rx="38" ry="45" fill="url(#earmuffGradient)" stroke="#2a2a2a" stroke-width="2" />
+              
+              <!-- Detalles internos chevron (accent) -->
+              <path d="M 75 160 L 68 170 L 75 180 M 75 160 L 82 170 L 75 180" 
+                    stroke="#555" stroke-width="4" fill="none" opacity="0.7" />
+              <path d="M 75 170 L 68 180 L 75 190 M 75 170 L 82 180 L 75 190" 
+                    stroke="#555" stroke-width="4" fill="none" opacity="0.7" />
+              <path d="M 75 180 L 68 190 L 75 200 M 75 180 L 82 190 L 75 200" 
+                    stroke="#555" stroke-width="4" fill="none" opacity="0.7" />
+              
+              <!-- Borde interno -->
+              <ellipse cx="75" cy="185" rx="30" ry="37" fill="none" stroke="#2a2a2a" stroke-width="1" opacity="0.3" />
+              
+              <!-- Bracket de conexión (accent) -->
+              <rect id="earmuffBracket" x="100" y="175" width="15" height="20" rx="3" 
+                    fill="#555" stroke="#2a2a2a" stroke-width="1.5" opacity="0.8" />
+            </g>
+            
+            <!-- VISOR METÁLICO -->
+            <g id="visorGroup">
+              <!-- Marco del visor (accent) -->
+              <path id="visorFrame" d="M 260 100 Q 295 110 320 135 Q 340 165 335 195 Q 330 215 310 225 L 300 215 Q 315 195 318 175 Q 320 145 300 120 Q 280 105 260 100 Z" 
+                    fill="#555" stroke="#2a2a2a" stroke-width="2" opacity="0.9" />
+              
+              <!-- Malla metálica del visor -->
+              <path d="M 265 108 Q 295 118 315 140 Q 330 165 327 190 Q 323 205 310 215 L 305 210 Q 315 190 315 170 Q 315 145 298 125 Q 282 112 265 108 Z" 
+                    fill="url(#meshPattern)" opacity="0.5" />
+              
+              <!-- Marco superior reforzado (accent) -->
+              <path d="M 260 100 Q 280 97 300 102" stroke="#555" stroke-width="6" fill="none" opacity="0.7" />
+              
+              <!-- Bisagra del visor (accent - detalle rojo) -->
+              <circle cx="262" cy="100" r="5" fill="#E30613" stroke="#2a2a2a" stroke-width="1" />
+              <circle cx="262" cy="100" r="2.5" fill="#2a2a2a" />
+            </g>
+            
+            <!-- DETALLES INFERIORES -->
+            <!-- Protección mandíbula (accent) -->
+            <path id="chinProtection" d="M 115 195 Q 140 210 170 215 Q 200 215 230 205 L 235 195 Q 200 205 170 205 Q 140 200 120 190 Z" 
+                  fill="#555" stroke="#2a2a2a" stroke-width="1.5" opacity="0.7" />
+            
+            <!-- Correa con clip magnético -->
+            <g id="chinStrap">
+              <path d="M 240 195 Q 260 210 270 235" stroke="#444" stroke-width="3" fill="none" />
+              <rect x="267" y="233" width="8" height="12" rx="2" fill="#555" stroke="#2a2a2a" stroke-width="1" />
+              <!-- Detalle rojo del clip -->
+              <rect x="269" y="237" width="4" height="4" fill="#E30613" />
+            </g>
+            
+            <!-- Sombra base -->
+            <ellipse cx="180" cy="260" rx="140" ry="15" fill="#000" opacity="0.1" />
+          </svg>
+          <div class="preview-labels">
+            <div class="preview-label">
+              <div class="preview-color-dot" id="previewShellDot"></div>
+              <span>Color 1: Casco principal</span>
+            </div>
+            <div class="preview-label">
+              <div class="preview-color-dot" id="previewAccentDot"></div>
+              <span>Color 2: Detalles y orejeras</span>
+            </div>
+          </div>
         </div>
+        <small>Vista aproximada. Los colores y acabados reales pueden variar.</small>
+      </div>
 
-        <div class="field">
-          <label for="accentColor">Color detalles / orejeras</label>
-          <select id="accentColor" name="accentColor" required>
-            <!-- Se rellena por JS -->
-          </select>
-          <small>Color para detalles, orejeras u otros elementos.</small>
+      <!-- COMBINACIONES POPULARES -->
+      <div class="field">
+        <label>Combinaciones populares</label>
+        <div class="popular-combos">
+          <button type="button" class="combo-btn" data-shell="30" data-accent="80" title="Verde/Negro">
+            <div class="combo-preview">
+              <div class="combo-color" style="background: #00A859;"></div>
+              <div class="combo-color" style="background: #000000;"></div>
+            </div>
+            <span>Verde/Negro</span>
+          </button>
+          <button type="button" class="combo-btn" data-shell="20" data-accent="80" title="Amarillo/Negro">
+            <div class="combo-preview">
+              <div class="combo-color" style="background: #FFFF00;"></div>
+              <div class="combo-color" style="background: #000000;"></div>
+            </div>
+            <span>Amarillo/Negro</span>
+          </button>
+          <button type="button" class="combo-btn" data-shell="60" data-accent="80" title="Naranja/Negro">
+            <div class="combo-preview">
+              <div class="combo-color" style="background: #FF6B00;"></div>
+              <div class="combo-color" style="background: #000000;"></div>
+            </div>
+            <span>Naranja/Negro</span>
+          </button>
+          <button type="button" class="combo-btn" data-shell="10" data-accent="80" title="Rojo/Negro">
+            <div class="combo-preview">
+              <div class="combo-color" style="background: #E30613;"></div>
+              <div class="combo-color" style="background: #000000;"></div>
+            </div>
+            <span>Rojo/Negro</span>
+          </button>
+          <button type="button" class="combo-btn" data-shell="40" data-accent="90" title="Azul/Blanco">
+            <div class="combo-preview">
+              <div class="combo-color" style="background: #0066CC;"></div>
+              <div class="combo-color" style="background: #FFFFFF; border: 1px solid #ddd;"></div>
+            </div>
+            <span>Azul/Blanco</span>
+          </button>
+          <button type="button" class="combo-btn" data-shell="80" data-accent="60" title="Negro/Naranja">
+            <div class="combo-preview">
+              <div class="combo-color" style="background: #000000;"></div>
+              <div class="combo-color" style="background: #FF6B00;"></div>
+            </div>
+            <span>Negro/Naranja</span>
+          </button>
         </div>
+        <small>Haz clic en una combinación para aplicarla automáticamente.</small>
+      </div>
+      <div class="color-explanation">
+        <strong>🎨 Sistema de 2 colores PROTOS®:</strong><br>
+        <strong>Color 1 (Shell):</strong> Color principal del casco exterior<br>
+        <strong>Color 2 (Detalles):</strong> Color de orejeras, protección auditiva y elementos secundarios
+      </div>
+      
+      <div class="field">
+        <label>Color 1 - Casco (Shell)</label>
+        <div id="shellColorPicker" class="color-picker">
+          <!-- Se rellena por JS -->
+        </div>
+        <input type="hidden" id="shellColor" name="shellColor" required />
+        <small>Color principal del casco exterior.</small>
+      </div>
+
+      <div class="field">
+        <label>Color 2 - Detalles / Orejeras</label>
+        <div id="accentColorPicker" class="color-picker">
+          <!-- Se rellena por JS -->
+        </div>
+        <input type="hidden" id="accentColor" name="accentColor" required />
+        <small>Color para protección auditiva y detalles secundarios.</small>
       </div>
 
       <!-- VISOR -->
@@ -162,16 +499,36 @@
         <select id="visor" name="visor" required>
           <option value="">Selecciona un modelo primero</option>
         </select>
-        <small>Según el modelo, solo se muestran visores compatibles.</small>
+        <small id="visorInfo">Según el modelo, solo se muestran visores compatibles.</small>
+        <div id="visorIncluded" class="included-box" style="display: none; margin-top: 0.5rem;">
+          <strong>✓ Incluido en el precio:</strong>
+          <span id="visorIncludedText"></span>
+        </div>
+      </div>
+
+      <!-- PERSONALIZACIÓN VISOR -->
+      <div class="field" id="visorCustomSection" style="display: none;">
+        <label for="visorCustom">Personalización del visor (opcional)</label>
+        <div style="margin-bottom: 0.5rem;">
+          <input type="file" id="visorCustomFile" accept=".svg,.ai,.eps,.pdf,.png,.jpg" style="font-size: 0.85rem;" />
+        </div>
+        <textarea id="visorCustomNotes" name="visorCustomNotes" rows="2"
+          placeholder="Describe tu diseño: logo, colores específicos, posición preferida..."></textarea>
+        <small>
+          💡 <strong>Recomendaciones:</strong> Formato vectorial (SVG, AI, EPS) preferido. Diseños con líneas simples y buen contraste funcionan mejor en visores metálicos. Los detalles muy finos pueden no verse bien.
+        </small>
       </div>
 
       <!-- ACCESORIOS COMPATIBLES -->
       <div class="field">
         <label>Accesorios opcionales</label>
-        <div id="accessoriesContainer" class="accessories-group">
-          <!-- Se rellena por JS -->
+        <div id="includedAccessoriesInfo" class="included-box" style="display: none;">
+          <strong>✓ Incluido de serie:</strong>
+          <ul id="includedList"></ul>
         </div>
-        <small>Solo se muestran accesorios compatibles con el modelo elegido.</small>
+        <div id="accessoriesContainer" class="accessories-group">
+        </div>
+        <small>Solo se muestran accesorios compatibles con el modelo elegido. Los marcados están incluidos de serie.</small>
       </div>
 
       <!-- NOTAS EXTRA DEL CLIENTE -->
@@ -182,6 +539,7 @@
       </div>
 
       <button type="submit">Añadir configuración</button>
+      <button type="button" id="resetBtn">Restablecer configuración</button>
 
       <!-- RESUMEN NORMALIZADO -->
       <div class="summary">
@@ -190,123 +548,172 @@
         <pre id="summaryJson">{}</pre>
       </div>
 
-      <!-- Hidden para enviar JSON normalizado si quieres -->
       <input type="hidden" id="normalizedConfig" name="normalizedConfig" value="">
     </form>
   </div>
 
   <script>
-    // === Datos de configuración (puedes expandir o adaptar SKUs a tu realidad) ===
+    // === Datos de configuración (actualizados según catálogo oficial 2023-2025) ===
     const COLORS = [
-      { id: "20", name: "Amarillo neón", code: "PR-COLOR-20" },
-      { id: "60", name: "Naranja", code: "PR-COLOR-60" },
-      { id: "10", name: "Rojo", code: "PR-COLOR-10" },
-      { id: "40", name: "Azul", code: "PR-COLOR-40" },
-      { id: "30", name: "Verde", code: "PR-COLOR-30" },
-      { id: "90", name: "Blanco", code: "PR-COLOR-90" },
-      { id: "80", name: "Negro", code: "PR-COLOR-80" }
+      { id: "20", name: "Amarillo neón", code: "PR-COLOR-20", hex: "#FFFF00" },
+      { id: "60", name: "Naranja", code: "PR-COLOR-60", hex: "#FF6B00" },
+      { id: "10", name: "Rojo", code: "PR-COLOR-10", hex: "#E30613" },
+      { id: "40", name: "Azul", code: "PR-COLOR-40", hex: "#0066CC" },
+      { id: "30", name: "Verde", code: "PR-COLOR-30", hex: "#00A859" },
+      { id: "90", name: "Blanco", code: "PR-COLOR-90", hex: "#FFFFFF" },
+      { id: "80", name: "Negro", code: "PR-COLOR-80", hex: "#000000" },
+      { id: "31", name: "Negro mate", code: "PR-COLOR-31", hex: "#1A1A1A" },
+      { id: "67", name: "Naranja neón", code: "PR-COLOR-67", hex: "#FF4500" },
+      { id: "68", name: "Rojo-Naranja neón", code: "PR-COLOR-68", hex: "#FF2400" },
+      { id: "85", name: "Verde neón", code: "PR-COLOR-85", hex: "#39FF14" },
+      { id: "115", name: "Rosa neón", code: "PR-COLOR-115", hex: "#FF10F0" },
+      { id: "110", name: "Rosa", code: "PR-COLOR-110", hex: "#FF69B4" },
+      { id: "45", name: "Azul metálico", code: "PR-COLOR-45", hex: "#4169E1" },
+      { id: "11", name: "Carbono", code: "PR-COLOR-11", hex: "#2C2C2C" },
+      { id: "77", name: "Luminiscente", code: "PR-COLOR-77", hex: "#B4FF00" },
+      { id: "91", name: "Blanco reflectante", code: "PR-COLOR-91", hex: "#F0F0F0" },
+      { id: "92", name: "Negro reflectante", code: "PR-COLOR-92", hex: "#262626" },
+      { id: "94", name: "Azul claro reflectante", code: "PR-COLOR-94", hex: "#87CEEB" },
+      { id: "95", name: "Amarillo reflectante", code: "PR-COLOR-95", hex: "#FFD700" },
+      { id: "96", name: "Naranja reflectante", code: "PR-COLOR-96", hex: "#FFA500" },
+      { id: "97", name: "Rubí reflectante", code: "PR-COLOR-97", hex: "#E0115F" },
+      { id: "98", name: "Verde reflectante", code: "PR-COLOR-98", hex: "#50C878" },
+      { id: "99", name: "Plata reflectante", code: "PR-COLOR-99", hex: "#C0C0C0" }
     ];
 
     const VISORS = {
       g16: {
         id: "g16",
         label: "Visor metálico G16 (ART. 204064)",
-        sku: "PR-VISOR-G16-204064"
+        sku: "PR-VISOR-G16-204064",
+        allowsCustomization: true
       },
       f39: {
         id: "f39",
         label: "Visor metálico F39 (ART. 204063)",
-        sku: "PR-VISOR-F39-204063"
+        sku: "PR-VISOR-F39-204063",
+        allowsCustomization: true
       },
       clear: {
         id: "clear",
         label: "Visor transparente Clear (ART. 204071)",
-        sku: "PR-VISOR-CLEAR-204071"
+        sku: "PR-VISOR-CLEAR-204071",
+        allowsCustomization: false
       },
       none: {
         id: "none",
         label: "Sin visor adicional",
-        sku: "PR-VISOR-NONE"
+        sku: "PR-VISOR-NONE",
+        allowsCustomization: false
       }
     };
 
     const ACCESSORIES = {
       neck: {
         id: "neck",
-        label: "Neck Protector",
-        sku: "PR-ACC-NECK"
+        label: "Neck Protector (ART. 204065)",
+        sku: "PR-ACC-NECK-204065"
       },
       btcom: {
         id: "btcom",
-        label: "BT-COM",
+        label: "BT-COM (ART. 205200)",
         sku: "PR-ACC-BTCOM-205200"
       },
       goggles: {
         id: "goggles",
-        label: "Gafas de seguridad integradas",
-        sku: "PR-ACC-GOGGLES"
+        label: "Gafas de seguridad integradas (ART. 204090)",
+        sku: "PR-ACC-GOGGLES-204090"
       },
       maclip: {
         id: "maclip",
-        label: "Maclip Light (linterna frontal)",
-        sku: "PR-ACC-MACLIP"
+        label: "Maclip Light (linterna frontal) (ART. 204074/204078)",
+        sku: "PR-ACC-MACLIP-204074"
       },
       crashAbsorber: {
         id: "crashAbsorber",
-        label: "CrashAbsorber",
-        sku: "PR-ACC-CRASHABSORBER"
+        label: "CrashAbsorber (ART. 204080)",
+        sku: "PR-ACC-CRASHABSORBER-204080"
       },
       actioncam: {
         id: "actioncam",
-        label: "Soporte Actioncam",
-        sku: "PR-ACC-ACTIONCAM"
+        label: "Soporte Actioncam (ART. 204047)",
+        sku: "PR-ACC-ACTIONCAM-204047"
       },
       earmuffs: {
         id: "earmuffs",
-        label: "Protección auditiva DB27",
-        sku: "PR-ACC-EARMUFFS-DB27"
+        label: "Protección auditiva DB27 (ART. 204067)",
+        sku: "PR-ACC-EARMUFFS-204067"
+      },
+      clipon: {
+        id: "clipon",
+        label: "Clip-on Clear - protector sobre visor metálico (ART. 204072)",
+        sku: "PR-ACC-CLIPON-204072"
+      },
+      wallmount: {
+        id: "wallmount",
+        label: "Soporte de pared y transporte (ART. 205400)",
+        sku: "PR-ACC-WALLMOUNT-205400"
+      },
+      klimaair: {
+        id: "klimaair",
+        label: "KlimaAIR® Set - almohadillas de reemplazo (ART. 204060)",
+        sku: "PR-ACC-KLIMAAIR-204060"
       }
     };
 
-    // Modelos y compatibilidades (ejemplo base, amplíalo si quieres más modelos)
+    // Modelos y compatibilidades (corregido según catálogo oficial)
     const MODELS = {
       forest: {
         id: "forest",
-        label: "PROTOS Forest",
+        label: "PROTOS® Forest",
+        description: "Trabajo forestal extremo. Siempre incluye visor metálico de serie.",
         sizes: [
           { id: "std", label: "54–62 cm (Standard)", shellSkuPrefix: "PR-FOREST-STD" },
           { id: "lg", label: "56–64 cm (Large)", shellSkuPrefix: "PR-FOREST-LG" }
         ],
         visorsAllowed: ["g16", "f39"],
-        accessoriesAllowed: ["neck", "btcom", "goggles", "maclip", "actioncam", "earmuffs"]
+        baseVisor: "g16",
+        accessoriesAllowed: ["neck", "btcom", "goggles", "maclip", "actioncam", "earmuffs", "clipon", "wallmount", "klimaair"],
+        includedAccessories: [],
+        includedFeatures: ["Visor metálico G16 o F39", "Protección auditiva integral EN 352-3"]
       },
       arborist: {
         id: "arborist",
-        label: "PROTOS Arborist",
+        label: "PROTOS® Arborist",
+        description: "Premium class. Equipamiento completo para trabajos en altura.",
         sizes: [
           { id: "std", label: "54–62 cm (Standard)", shellSkuPrefix: "PR-ARBORIST-STD" },
           { id: "lg", label: "56–64 cm (Large)", shellSkuPrefix: "PR-ARBORIST-LG" }
         ],
         visorsAllowed: ["g16", "f39"],
-        accessoriesAllowed: ["neck", "btcom", "goggles", "maclip", "crashAbsorber", "actioncam", "earmuffs"]
+        baseVisor: "g16",
+        accessoriesAllowed: ["neck", "btcom", "goggles", "maclip", "crashAbsorber", "actioncam", "earmuffs", "clipon", "wallmount", "klimaair"],
+        includedAccessories: ["crashAbsorber"],
+        includedFeatures: ["Visor metálico G16 o F39", "CrashAbsorber (absorción 5x)", "MaClip chin strap", "Protección auditiva integral"]
       },
       climber: {
         id: "climber",
-        label: "PROTOS Climber",
+        label: "PROTOS® Climber",
+        description: "Operaciones en altitud, rescate técnico y montañismo.",
         sizes: [
           { id: "std", label: "54–62 cm (Standard)", shellSkuPrefix: "PR-CLIMBER-STD" }
         ],
         visorsAllowed: ["clear", "none"],
-        accessoriesAllowed: ["goggles", "maclip", "crashAbsorber", "actioncam"]
+        accessoriesAllowed: ["goggles", "maclip", "crashAbsorber", "actioncam", "wallmount", "klimaair"],
+        includedAccessories: ["crashAbsorber"],
+        includedFeatures: ["CrashAbsorber (absorción 5x)", "MaClip chin strap", "Certificación EN 12492"]
       },
       industry: {
         id: "industry",
-        label: "PROTOS Industry",
+        label: "PROTOS® Industry",
+        description: "Construcción, ingeniería civil, mantenimiento. Máxima versatilidad.",
         sizes: [
           { id: "std", label: "54–62 cm (Standard)", shellSkuPrefix: "PR-INDUSTRY-STD" }
         ],
         visorsAllowed: ["g16", "f39", "clear", "none"],
-        accessoriesAllowed: ["neck", "btcom", "goggles", "maclip", "actioncam", "earmuffs"]
+        accessoriesAllowed: ["neck", "btcom", "goggles", "maclip", "actioncam", "earmuffs", "wallmount", "klimaair"],
+        includedAccessories: [],
+        includedFeatures: ["Ventilación ajustable", "Sistema modular completo"]
       }
     };
 
@@ -318,24 +725,162 @@
         const opt = document.createElement("option");
         opt.value = model.id;
         opt.textContent = model.label;
+        opt.dataset.description = model.description || "";
         modelSelect.appendChild(opt);
       });
     }
 
     function populateColorSelect(selectEl) {
-      selectEl.innerHTML = "";
-      const placeholder = document.createElement("option");
-      placeholder.value = "";
-      placeholder.textContent = "Selecciona un color";
-      selectEl.appendChild(placeholder);
+      // Ya no se usa - reemplazado por color picker
+    }
 
+    function createColorPicker(containerId, inputId) {
+      const container = document.getElementById(containerId);
+      const input = document.getElementById(inputId);
+      
+      container.innerHTML = "";
+      
       COLORS.forEach(color => {
-        const opt = document.createElement("option");
-        opt.value = color.id;
-        opt.textContent = `${color.id} – ${color.name}`;
-        opt.dataset.sku = color.code;
-        selectEl.appendChild(opt);
+        const option = document.createElement("div");
+        option.className = "color-option";
+        option.dataset.colorId = color.id;
+        option.onclick = () => selectColor(containerId, inputId, color.id);
+        
+        const swatch = document.createElement("div");
+        swatch.className = "color-swatch";
+        swatch.style.backgroundColor = color.hex;
+        
+        // Borde especial para blanco
+        if (color.hex === "#FFFFFF" || color.hex === "#F0F0F0") {
+          swatch.style.border = "2px solid #ccc";
+        }
+        
+        const label = document.createElement("div");
+        label.className = "color-label";
+        label.textContent = color.name;
+        
+        const code = document.createElement("div");
+        code.className = "color-code";
+        code.textContent = color.id;
+        
+        option.appendChild(swatch);
+        option.appendChild(label);
+        option.appendChild(code);
+        container.appendChild(option);
       });
+    }
+
+    function selectColor(containerId, inputId, colorId) {
+      const container = document.getElementById(containerId);
+      const input = document.getElementById(inputId);
+      
+      // Remover selección anterior
+      container.querySelectorAll(".color-option").forEach(opt => {
+        opt.classList.remove("selected");
+      });
+      
+      // Marcar nueva selección
+      const selectedOption = container.querySelector(`[data-color-id="${colorId}"]`);
+      if (selectedOption) {
+        selectedOption.classList.add("selected");
+      }
+      
+      // Actualizar input hidden
+      input.value = colorId;
+      
+      // Actualizar preview del casco
+      updateHelmetPreview();
+      
+      // Actualizar SKU y resumen
+      updateShellSku();
+      updateSummary();
+    }
+
+    function updateHelmetPreview() {
+      const shellColorId = document.getElementById("shellColor").value;
+      const accentColorId = document.getElementById("accentColor").value;
+      
+      const shellColorObj = COLORS.find(c => c.id === shellColorId);
+      const accentColorObj = COLORS.find(c => c.id === accentColorId);
+      
+      if (shellColorObj) {
+        // Actualizar gradientes del casco principal
+        const shellGradient = document.getElementById("shellGradient");
+        if (shellGradient) {
+          shellGradient.innerHTML = `
+            <stop offset="0%" style="stop-color:${shellColorObj.hex};stop-opacity:1" />
+            <stop offset="100%" style="stop-color:${shellColorObj.hex};stop-opacity:0.7" />
+          `;
+        }
+        
+        const earmuffGradient = document.getElementById("earmuffGradient");
+        if (earmuffGradient) {
+          earmuffGradient.innerHTML = `
+            <stop offset="0%" style="stop-color:${shellColorObj.hex};stop-opacity:1" />
+            <stop offset="100%" style="stop-color:${shellColorObj.hex};stop-opacity:0.85" />
+          `;
+        }
+        
+        // Actualizar dot de preview
+        document.getElementById("previewShellDot").style.backgroundColor = shellColorObj.hex;
+      }
+      
+      if (accentColorObj) {
+        // Actualizar gradiente de detalles
+        const accentGradient = document.getElementById("accentGradient");
+        if (accentGradient) {
+          accentGradient.innerHTML = `
+            <stop offset="0%" style="stop-color:${accentColorObj.hex};stop-opacity:1" />
+            <stop offset="100%" style="stop-color:${accentColorObj.hex};stop-opacity:0.8" />
+          `;
+        }
+        
+        // Actualizar partes con color de acento directo
+        const accentParts = document.querySelectorAll("#ventBack, #shellDivider, #frontDetail, #earmuffBracket, #visorFrame, #chinProtection");
+        accentParts.forEach(part => {
+          if (part.tagName === "path" && part.hasAttribute("stroke")) {
+            part.setAttribute("stroke", accentColorObj.hex);
+          } else {
+            part.setAttribute("fill", accentColorObj.hex);
+          }
+        });
+        
+        // Actualizar detalles chevron de la orejera
+        const chevrons = document.querySelectorAll("#earmuffMain path");
+        chevrons.forEach(path => {
+          if (path.hasAttribute("stroke")) {
+            path.setAttribute("stroke", accentColorObj.hex);
+          }
+        });
+        
+        // Actualizar ventilación
+        const vents = document.querySelectorAll("#ventilationSlots rect");
+        vents.forEach(vent => vent.setAttribute("fill", accentColorObj.hex));
+        
+        // Actualizar correa
+        const strapParts = document.querySelectorAll("#chinStrap path, #chinStrap rect:first-of-type");
+        strapParts.forEach(part => {
+          if (part.tagName === "path") {
+            part.setAttribute("stroke", accentColorObj.hex);
+          } else {
+            part.setAttribute("fill", accentColorObj.hex);
+          }
+        });
+        
+        // Actualizar dot de preview
+        document.getElementById("previewAccentDot").style.backgroundColor = accentColorObj.hex;
+      }
+    }
+
+    function applyCombo(shellId, accentId) {
+      // Aplicar selección en los pickers
+      selectColor("shellColorPicker", "shellColor", shellId);
+      selectColor("accentColorPicker", "accentColor", accentId);
+      
+      // Marcar botón como activo
+      document.querySelectorAll(".combo-btn").forEach(btn => btn.classList.remove("active"));
+      const activeBtn = document.querySelector(`[data-shell="${shellId}"][data-accent="${accentId}"]`);
+      if (activeBtn) activeBtn.classList.add("active");
     }
 
     function updateSizeAndShell(modelId) {
@@ -369,13 +914,21 @@
 
     function updateVisorSelect(modelId) {
       const visorSelect = document.getElementById("visor");
+      const visorIncluded = document.getElementById("visorIncluded");
+      const visorIncludedText = document.getElementById("visorIncludedText");
+      const visorInfo = document.getElementById("visorInfo");
+      const visorCustomSection = document.getElementById("visorCustomSection");
+      
       visorSelect.innerHTML = "";
+      visorIncluded.style.display = "none";
+      visorCustomSection.style.display = "none";
 
       if (!modelId || !MODELS[modelId]) {
         const opt = document.createElement("option");
         opt.value = "";
         opt.textContent = "Selecciona un modelo primero";
         visorSelect.appendChild(opt);
+        visorInfo.textContent = "Según el modelo, solo se muestran visores compatibles.";
         return;
       }
 
@@ -392,20 +945,68 @@
         opt.value = visor.id;
         opt.textContent = visor.label;
         opt.dataset.sku = visor.sku;
+        opt.dataset.allowsCustomization = visor.allowsCustomization;
         visorSelect.appendChild(opt);
+      });
+
+      // Mostrar información si el modelo incluye visor de serie
+      if (model.baseVisor && (model.id === "forest" || model.id === "arborist")) {
+        visorIncluded.style.display = "block";
+        visorIncludedText.textContent = " Elige entre visor G16 (16 aperturas/cm²) o F39 (39 aperturas/cm²). Uno de ellos está incluido en el precio base del casco.";
+        visorInfo.textContent = "Ambas opciones tienen la misma certificación EN 1731 S. La diferencia está en el tamaño de la malla metálica.";
+      } else if (model.id === "climber") {
+        visorInfo.textContent = "Este modelo admite visor transparente Clear o puede usarse sin visor adicional.";
+      } else if (model.id === "industry") {
+        visorInfo.textContent = "Modelo versátil: compatible con visores metálicos, transparente o sin visor.";
+      }
+      
+      // Listener para mostrar/ocultar personalización según visor seleccionado
+      visorSelect.addEventListener("change", function() {
+        const selectedOption = this.options[this.selectedIndex];
+        const allowsCustomization = selectedOption.dataset.allowsCustomization === "true";
+        
+        if (allowsCustomization) {
+          visorCustomSection.style.display = "block";
+        } else {
+          visorCustomSection.style.display = "none";
+          // Limpiar campos de personalización
+          document.getElementById("visorCustomFile").value = "";
+          document.getElementById("visorCustomNotes").value = "";
+          const previews = document.querySelectorAll(".upload-preview");
+          previews.forEach(p => p.remove());
+        }
       });
     }
 
     function updateAccessories(modelId) {
       const container = document.getElementById("accessoriesContainer");
+      const includedInfo = document.getElementById("includedAccessoriesInfo");
+      const includedList = document.getElementById("includedList");
+      
       container.innerHTML = "";
+      includedList.innerHTML = "";
 
       if (!modelId || !MODELS[modelId]) {
         container.textContent = "Selecciona un modelo para ver accesorios compatibles.";
+        includedInfo.style.display = "none";
         return;
       }
 
       const model = MODELS[modelId];
+      
+      // Mostrar elementos incluidos de serie
+      if (model.includedFeatures && model.includedFeatures.length > 0) {
+        includedInfo.style.display = "block";
+        model.includedFeatures.forEach(feature => {
+          const li = document.createElement("li");
+          li.textContent = feature;
+          includedList.appendChild(li);
+        });
+      } else {
+        includedInfo.style.display = "none";
+      }
+
+      // Mostrar accesorios opcionales
       model.accessoriesAllowed.forEach(accId => {
         const acc = ACCESSORIES[accId];
         if (!acc) return;
@@ -419,8 +1020,20 @@
         checkbox.value = acc.id;
         checkbox.dataset.sku = acc.sku;
 
+        // Marcar como checked y disabled si viene incluido de serie
+        const isIncluded = model.includedAccessories && model.includedAccessories.includes(acc.id);
+        if (isIncluded) {
+          checkbox.checked = true;
+          checkbox.disabled = true;
+          label.style.opacity = "0.7";
+          label.style.fontWeight = "600";
+        }
+
         label.appendChild(checkbox);
-        label.appendChild(document.createTextNode(` ${acc.label}`));
+        const labelText = isIncluded 
+          ? ` ${acc.label} ✓ (incluido)` 
+          : ` ${acc.label}`;
+        label.appendChild(document.createTextNode(labelText));
 
         container.appendChild(label);
       });
@@ -445,7 +1058,6 @@
       }
 
       const prefix = selectedSizeOption.dataset.shellSkuPrefix;
-      // Ejemplo de SKU: PR-FOREST-STD-C20-A60 (C=color shell, A=color acento)
       const shellPart = shellColorId ? `C${shellColorId}` : "CXX";
       const accentPart = accentColorId ? `A${accentColorId}` : "AXX";
       baseShellInput.value = `${prefix}-${shellPart}-${accentPart}`;
@@ -459,6 +1071,8 @@
       const visorId = document.getElementById("visor").value;
       const notes = document.getElementById("customNotes").value || "";
       const baseShellSku = document.getElementById("baseShell").value;
+      const visorCustomNotes = document.getElementById("visorCustomNotes").value || "";
+      const visorCustomFile = document.getElementById("visorCustomFile").files[0];
 
       const model = MODELS[modelId] || null;
       const sizeObj = model
@@ -475,13 +1089,14 @@
         return {
           id: chk.value,
           label: accData ? accData.label : chk.value,
-          sku: chk.dataset.sku || (accData ? accData.sku : null)
+          sku: chk.dataset.sku || (accData ? accData.sku : null),
+          included: chk.disabled
         };
       });
 
       const config = {
         model: model
-          ? { id: model.id, label: model.label }
+          ? { id: model.id, label: model.label, description: model.description }
           : null,
         size: sizeObj
           ? { id: sizeObj.id, label: sizeObj.label }
@@ -496,9 +1111,19 @@
             : null
         },
         visor: visor
-          ? { id: visor.id, label: visor.label, sku: visor.sku }
+          ? { 
+              id: visor.id, 
+              label: visor.label, 
+              sku: visor.sku,
+              includedInPrice: model && model.baseVisor ? true : false,
+              customization: visorCustomNotes ? {
+                notes: visorCustomNotes,
+                fileAttached: visorCustomFile ? visorCustomFile.name : null
+              } : null
+            }
           : null,
         accessories: accessoriesChecked,
+        includedFeatures: model ? model.includedFeatures : [],
         notes: notes
       };
 
@@ -507,12 +1132,63 @@
       document.getElementById("normalizedConfig").value = jsonStr;
     }
 
+    function resetConfiguration() {
+      document.getElementById("protos-configurator").reset();
+      document.getElementById("model").value = "";
+      updateSizeAndShell("");
+      updateVisorSelect("");
+      updateAccessories("");
+      document.getElementById("baseShell").value = "";
+      document.getElementById("modelDescription").textContent = "Define el uso principal: forestal, escalada, industria, etc.";
+      
+      // Limpiar preview de archivo
+      const previews = document.querySelectorAll(".upload-preview");
+      previews.forEach(p => p.remove());
+      
+      // Limpiar selecciones de color
+      document.querySelectorAll(".color-option").forEach(opt => opt.classList.remove("selected"));
+      document.getElementById("shellColor").value = "";
+      document.getElementById("accentColor").value = "";
+      
+      // Reset preview del casco a colores por defecto
+      const shellGradient = document.getElementById("shellGradient");
+      if (shellGradient) {
+        shellGradient.innerHTML = `
+          <stop offset="0%" style="stop-color:#CCCCCC;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#CCCCCC;stop-opacity:0.7" />
+        `;
+      }
+      
+      const earmuffGradient = document.getElementById("earmuffGradient");
+      if (earmuffGradient) {
+        earmuffGradient.innerHTML = `
+          <stop offset="0%" style="stop-color:#CCCCCC;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#CCCCCC;stop-opacity:0.85" />
+        `;
+      }
+      
+      const accentGradient = document.getElementById("accentGradient");
+      if (accentGradient) {
+        accentGradient.innerHTML = `
+          <stop offset="0%" style="stop-color:#888888;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#888888;stop-opacity:0.8" />
+        `;
+      }
+      
+      document.getElementById("previewShellDot").style.backgroundColor = "#CCCCCC";
+      document.getElementById("previewAccentDot").style.backgroundColor = "#888888";
+      
+      // Desactivar combo buttons
+      document.querySelectorAll(".combo-btn").forEach(btn => btn.classList.remove("active"));
+      
+      updateSummary();
+    }
+
     // === Eventos ===
     document.addEventListener("DOMContentLoaded", () => {
-      // Poblar selects iniciales
       populateModelSelect();
-      populateColorSelect(document.getElementById("shellColor"));
-      populateColorSelect(document.getElementById("accentColor"));
+      createColorPicker("shellColorPicker", "shellColor");
+      createColorPicker("accentColorPicker", "accentColor");
       updateSizeAndShell("");
       updateVisorSelect("");
       updateAccessories("");
@@ -520,6 +1196,15 @@
 
       document.getElementById("model").addEventListener("change", () => {
         const modelId = document.getElementById("model").value;
+        const model = MODELS[modelId];
+        
+        const descElement = document.getElementById("modelDescription");
+        if (model && model.description) {
+          descElement.textContent = model.description;
+        } else {
+          descElement.textContent = "Define el uso principal: forestal, escalada, industria, etc.";
+        }
+        
         updateSizeAndShell(modelId);
         updateVisorSelect(modelId);
         updateAccessories(modelId);
@@ -532,18 +1217,40 @@
         updateSummary();
       });
 
-      document.getElementById("shellColor").addEventListener("change", () => {
-        updateShellSku();
-        updateSummary();
-      });
-
-      document.getElementById("accentColor").addEventListener("change", () => {
-        updateShellSku();
-        updateSummary();
-      });
-
       document.getElementById("visor").addEventListener("change", updateSummary);
+      document.getElementById("visorCustomNotes").addEventListener("input", updateSummary);
+      document.getElementById("visorCustomFile").addEventListener("change", (e) => {
+        updateSummary();
+        // Mostrar preview del archivo subido
+        const file = e.target.files[0];
+        if (file) {
+          const preview = document.createElement("div");
+          preview.className = "upload-preview";
+          preview.style.display = "block";
+          preview.style.marginTop = "0.5rem";
+          preview.style.padding = "0.5rem";
+          preview.style.background = "#f8f9fa";
+          preview.style.borderRadius = "4px";
+          preview.style.fontSize = "0.8rem";
+          preview.innerHTML = `<strong style="color: #2e7d32;">✓ Archivo cargado:</strong> ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+          
+          // Eliminar preview anterior si existe
+          const oldPreview = e.target.parentElement.querySelector(".upload-preview");
+          if (oldPreview) oldPreview.remove();
+          
+          e.target.parentElement.appendChild(preview);
+        }
+      });
       document.getElementById("customNotes").addEventListener("input", updateSummary);
+
+      // Event listeners para combinaciones populares
+      document.querySelectorAll(".combo-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const shellId = btn.dataset.shell;
+          const accentId = btn.dataset.accent;
+          applyCombo(shellId, accentId);
+        });
+      });
 
       document.getElementById("accessoriesContainer").addEventListener("change", (e) => {
         if (e.target && e.target.name === "accessories") {
@@ -551,9 +1258,9 @@
         }
       });
 
+      document.getElementById("resetBtn").addEventListener("click", resetConfiguration);
+
       document.getElementById("protos-configurator").addEventListener("submit", (e) => {
-        // Aquí normalmente enviarías el formulario a tu backend.
-        // Esto es solo para demo, evitamos el submit real.
         e.preventDefault();
         alert("Configuración preparada. Revisa el JSON normalizado para integrarlo con tu ecommerce.");
       });
