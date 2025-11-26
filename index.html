@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Configurador PROTOS</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 2rem;
+      background: #f5f5f5;
+    }
+    .configurator {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 1.5rem 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    }
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 0.75rem;
+    }
+    .subtitle {
+      font-size: 0.95rem;
+      color: #555;
+      margin-bottom: 1.5rem;
+    }
+    .field {
+      margin-bottom: 1.25rem;
+    }
+    .field label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    .field small {
+      display: block;
+      font-size: 0.8rem;
+      color: #777;
+      margin-top: 0.2rem;
+    }
+    select, button, input[type="text"], textarea {
+      width: 100%;
+      padding: 0.4rem 0.5rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 0.95rem;
+      box-sizing: border-box;
+    }
+    .row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .row .field {
+      flex: 1 1 200px;
+    }
+    .accessories-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.5rem;
+      margin-top: 0.5rem;
+    }
+    .accessory-item {
+      font-size: 0.9rem;
+    }
+    .accessory-item input {
+      margin-right: 0.3rem;
+    }
+    .summary {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: #f0f4ff;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+    .summary h2 {
+      margin-top: 0;
+      font-size: 1.1rem;
+    }
+    pre {
+      background: #111827;
+      color: #e5e7eb;
+      padding: 0.75rem;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 0.85rem;
+    }
+    button[type="submit"] {
+      width: auto;
+      padding: 0.6rem 1.2rem;
+      background: #111827;
+      color: #ffffff;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-top: 0.5rem;
+    }
+    button[type="submit"]:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <div class="configurator">
+    <h1>Configurador de casco PROTOS</h1>
+    <p class="subtitle">
+      Elige el modelo, talla, colores, visor y accesorios. Solo verás opciones compatibles con cada modelo.
+    </p>
+
+    <form id="protos-configurator">
+      <!-- MODELO -->
+      <div class="field">
+        <label for="model">Modelo</label>
+        <select id="model" name="model" required>
+          <option value="">Selecciona un modelo</option>
+          <!-- Se rellena por JS -->
+        </select>
+        <small>Define el uso principal: forestal, escalada, industria, etc.</small>
+      </div>
+
+      <!-- TALLA + CASCO BASE -->
+      <div class="row">
+        <div class="field">
+          <label for="size">Talla casco</label>
+          <select id="size" name="size" required>
+            <option value="">Selecciona un modelo primero</option>
+          </select>
+          <small>Rango de perímetro craneal indicado por el fabricante.</small>
+        </div>
+        <div class="field">
+          <label for="baseShell">Casco base (SKU)</label>
+          <input id="baseShell" name="baseShell" type="text" readonly />
+          <small>SKU técnico interno, se rellena automáticamente según modelo y talla.</small>
+        </div>
+      </div>
+
+      <!-- COLORES -->
+      <div class="row">
+        <div class="field">
+          <label for="shellColor">Color casco (shell)</label>
+          <select id="shellColor" name="shellColor" required>
+            <!-- Se rellena por JS -->
+          </select>
+          <small>Color principal del casco.</small>
+        </div>
+
+        <div class="field">
+          <label for="accentColor">Color detalles / orejeras</label>
+          <select id="accentColor" name="accentColor" required>
+            <!-- Se rellena por JS -->
+          </select>
+          <small>Color para detalles, orejeras u otros elementos.</small>
+        </div>
+      </div>
+
+      <!-- VISOR -->
+      <div class="field">
+        <label for="visor">Visor</label>
+        <select id="visor" name="visor" required>
+          <option value="">Selecciona un modelo primero</option>
+        </select>
+        <small>Según el modelo, solo se muestran visores compatibles.</small>
+      </div>
+
+      <!-- ACCESORIOS COMPATIBLES -->
+      <div class="field">
+        <label>Accesorios opcionales</label>
+        <div id="accessoriesContainer" class="accessories-group">
+          <!-- Se rellena por JS -->
+        </div>
+        <small>Solo se muestran accesorios compatibles con el modelo elegido.</small>
+      </div>
+
+      <!-- NOTAS EXTRA DEL CLIENTE -->
+      <div class="field">
+        <label for="customNotes">Notas extra de personalización (opcional)</label>
+        <textarea id="customNotes" name="customNotes" rows="3"
+          placeholder="Por ejemplo: logo de empresa, preferencia de montaje, observaciones…"></textarea>
+      </div>
+
+      <button type="submit">Añadir configuración</button>
+
+      <!-- RESUMEN NORMALIZADO -->
+      <div class="summary">
+        <h2>Resumen técnico (para tu backend)</h2>
+        <p>Esto es un ejemplo de cómo podrías serializar la configuración para tu sistema:</p>
+        <pre id="summaryJson">{}</pre>
+      </div>
+
+      <!-- Hidden para enviar JSON normalizado si quieres -->
+      <input type="hidden" id="normalizedConfig" name="normalizedConfig" value="">
+    </form>
+  </div>
+
+  <script>
+    // === Datos de configuración (puedes expandir o adaptar SKUs a tu realidad) ===
+    const COLORS = [
+      { id: "20", name: "Amarillo neón", code: "PR-COLOR-20" },
+      { id: "60", name: "Naranja", code: "PR-COLOR-60" },
+      { id: "10", name: "Rojo", code: "PR-COLOR-10" },
+      { id: "40", name: "Azul", code: "PR-COLOR-40" },
+      { id: "30", name: "Verde", code: "PR-COLOR-30" },
+      { id: "90", name: "Blanco", code: "PR-COLOR-90" },
+      { id: "80", name: "Negro", code: "PR-COLOR-80" }
+    ];
+
+    const VISORS = {
+      g16: {
+        id: "g16",
+        label: "Visor metálico G16 (ART. 204064)",
+        sku: "PR-VISOR-G16-204064"
+      },
+      f39: {
+        id: "f39",
+        label: "Visor metálico F39 (ART. 204063)",
+        sku: "PR-VISOR-F39-204063"
+      },
+      clear: {
+        id: "clear",
+        label: "Visor transparente Clear (ART. 204071)",
+        sku: "PR-VISOR-CLEAR-204071"
+      },
+      none: {
+        id: "none",
+        label: "Sin visor adicional",
+        sku: "PR-VISOR-NONE"
+      }
+    };
+
+    const ACCESSORIES = {
+      neck: {
+        id: "neck",
+        label: "Neck Protector",
+        sku: "PR-ACC-NECK"
+      },
+      btcom: {
+        id: "btcom",
+        label: "BT-COM",
+        sku: "PR-ACC-BTCOM-205200"
+      },
+      goggles: {
+        id: "goggles",
+        label: "Gafas de seguridad integradas",
+        sku: "PR-ACC-GOGGLES"
+      },
+      maclip: {
+        id: "maclip",
+        label: "Maclip Light (linterna frontal)",
+        sku: "PR-ACC-MACLIP"
+      },
+      crashAbsorber: {
+        id: "crashAbsorber",
+        label: "CrashAbsorber",
+        sku: "PR-ACC-CRASHABSORBER"
+      },
+      actioncam: {
+        id: "actioncam",
+        label: "Soporte Actioncam",
+        sku: "PR-ACC-ACTIONCAM"
+      },
+      earmuffs: {
+        id: "earmuffs",
+        label: "Protección auditiva DB27",
+        sku: "PR-ACC-EARMUFFS-DB27"
+      }
+    };
+
+    // Modelos y compatibilidades (ejemplo base, amplíalo si quieres más modelos)
+    const MODELS = {
+      forest: {
+        id: "forest",
+        label: "PROTOS Forest",
+        sizes: [
+          { id: "std", label: "54–62 cm (Standard)", shellSkuPrefix: "PR-FOREST-STD" },
+          { id: "lg", label: "56–64 cm (Large)", shellSkuPrefix: "PR-FOREST-LG" }
+        ],
+        visorsAllowed: ["g16", "f39"],
+        accessoriesAllowed: ["neck", "btcom", "goggles", "maclip", "actioncam", "earmuffs"]
+      },
+      arborist: {
+        id: "arborist",
+        label: "PROTOS Arborist",
+        sizes: [
+          { id: "std", label: "54–62 cm (Standard)", shellSkuPrefix: "PR-ARBORIST-STD" },
+          { id: "lg", label: "56–64 cm (Large)", shellSkuPrefix: "PR-ARBORIST-LG" }
+        ],
+        visorsAllowed: ["g16", "f39"],
+        accessoriesAllowed: ["neck", "btcom", "goggles", "maclip", "crashAbsorber", "actioncam", "earmuffs"]
+      },
+      climber: {
+        id: "climber",
+        label: "PROTOS Climber",
+        sizes: [
+          { id: "std", label: "54–62 cm (Standard)", shellSkuPrefix: "PR-CLIMBER-STD" }
+        ],
+        visorsAllowed: ["clear", "none"],
+        accessoriesAllowed: ["goggles", "maclip", "crashAbsorber", "actioncam"]
+      },
+      industry: {
+        id: "industry",
+        label: "PROTOS Industry",
+        sizes: [
+          { id: "std", label: "54–62 cm (Standard)", shellSkuPrefix: "PR-INDUSTRY-STD" }
+        ],
+        visorsAllowed: ["g16", "f39", "clear", "none"],
+        accessoriesAllowed: ["neck", "btcom", "goggles", "maclip", "actioncam", "earmuffs"]
+      }
+    };
+
+    // === Helpers para rellenar selects ===
+
+    function populateModelSelect() {
+      const modelSelect = document.getElementById("model");
+      Object.values(MODELS).forEach(model => {
+        const opt = document.createElement("option");
+        opt.value = model.id;
+        opt.textContent = model.label;
+        modelSelect.appendChild(opt);
+      });
+    }
+
+    function populateColorSelect(selectEl) {
+      selectEl.innerHTML = "";
+      const placeholder = document.createElement("option");
+      placeholder.value = "";
+      placeholder.textContent = "Selecciona un color";
+      selectEl.appendChild(placeholder);
+
+      COLORS.forEach(color => {
+        const opt = document.createElement("option");
+        opt.value = color.id;
+        opt.textContent = `${color.id} – ${color.name}`;
+        opt.dataset.sku = color.code;
+        selectEl.appendChild(opt);
+      });
+    }
+
+    function updateSizeAndShell(modelId) {
+      const sizeSelect = document.getElementById("size");
+      const baseShellInput = document.getElementById("baseShell");
+      sizeSelect.innerHTML = "";
+      baseShellInput.value = "";
+
+      if (!modelId || !MODELS[modelId]) {
+        const opt = document.createElement("option");
+        opt.value = "";
+        opt.textContent = "Selecciona un modelo primero";
+        sizeSelect.appendChild(opt);
+        return;
+      }
+
+      const model = MODELS[modelId];
+      const placeholder = document.createElement("option");
+      placeholder.value = "";
+      placeholder.textContent = "Selecciona talla";
+      sizeSelect.appendChild(placeholder);
+
+      model.sizes.forEach(size => {
+        const opt = document.createElement("option");
+        opt.value = size.id;
+        opt.textContent = size.label;
+        opt.dataset.shellSkuPrefix = size.shellSkuPrefix;
+        sizeSelect.appendChild(opt);
+      });
+    }
+
+    function updateVisorSelect(modelId) {
+      const visorSelect = document.getElementById("visor");
+      visorSelect.innerHTML = "";
+
+      if (!modelId || !MODELS[modelId]) {
+        const opt = document.createElement("option");
+        opt.value = "";
+        opt.textContent = "Selecciona un modelo primero";
+        visorSelect.appendChild(opt);
+        return;
+      }
+
+      const model = MODELS[modelId];
+      const placeholder = document.createElement("option");
+      placeholder.value = "";
+      placeholder.textContent = "Selecciona visor";
+      visorSelect.appendChild(placeholder);
+
+      model.visorsAllowed.forEach(visorId => {
+        const visor = VISORS[visorId];
+        if (!visor) return;
+        const opt = document.createElement("option");
+        opt.value = visor.id;
+        opt.textContent = visor.label;
+        opt.dataset.sku = visor.sku;
+        visorSelect.appendChild(opt);
+      });
+    }
+
+    function updateAccessories(modelId) {
+      const container = document.getElementById("accessoriesContainer");
+      container.innerHTML = "";
+
+      if (!modelId || !MODELS[modelId]) {
+        container.textContent = "Selecciona un modelo para ver accesorios compatibles.";
+        return;
+      }
+
+      const model = MODELS[modelId];
+      model.accessoriesAllowed.forEach(accId => {
+        const acc = ACCESSORIES[accId];
+        if (!acc) return;
+
+        const label = document.createElement("label");
+        label.className = "accessory-item";
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.name = "accessories";
+        checkbox.value = acc.id;
+        checkbox.dataset.sku = acc.sku;
+
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(` ${acc.label}`));
+
+        container.appendChild(label);
+      });
+    }
+
+    function updateShellSku() {
+      const modelId = document.getElementById("model").value;
+      const sizeSelect = document.getElementById("size");
+      const shellColorId = document.getElementById("shellColor").value;
+      const accentColorId = document.getElementById("accentColor").value;
+      const baseShellInput = document.getElementById("baseShell");
+
+      if (!modelId || !MODELS[modelId]) {
+        baseShellInput.value = "";
+        return;
+      }
+
+      const selectedSizeOption = sizeSelect.options[sizeSelect.selectedIndex];
+      if (!selectedSizeOption || !selectedSizeOption.dataset.shellSkuPrefix) {
+        baseShellInput.value = "";
+        return;
+      }
+
+      const prefix = selectedSizeOption.dataset.shellSkuPrefix;
+      // Ejemplo de SKU: PR-FOREST-STD-C20-A60 (C=color shell, A=color acento)
+      const shellPart = shellColorId ? `C${shellColorId}` : "CXX";
+      const accentPart = accentColorId ? `A${accentColorId}` : "AXX";
+      baseShellInput.value = `${prefix}-${shellPart}-${accentPart}`;
+    }
+
+    function updateSummary() {
+      const modelId = document.getElementById("model").value;
+      const sizeId = document.getElementById("size").value;
+      const shellColorId = document.getElementById("shellColor").value;
+      const accentColorId = document.getElementById("accentColor").value;
+      const visorId = document.getElementById("visor").value;
+      const notes = document.getElementById("customNotes").value || "";
+      const baseShellSku = document.getElementById("baseShell").value;
+
+      const model = MODELS[modelId] || null;
+      const sizeObj = model
+        ? model.sizes.find(s => s.id === sizeId)
+        : null;
+      const shellColor = COLORS.find(c => c.id === shellColorId) || null;
+      const accentColor = COLORS.find(c => c.id === accentColorId) || null;
+      const visor = VISORS[visorId] || null;
+
+      const accessoriesChecked = Array.from(
+        document.querySelectorAll("input[name='accessories']:checked")
+      ).map(chk => {
+        const accData = ACCESSORIES[chk.value];
+        return {
+          id: chk.value,
+          label: accData ? accData.label : chk.value,
+          sku: chk.dataset.sku || (accData ? accData.sku : null)
+        };
+      });
+
+      const config = {
+        model: model
+          ? { id: model.id, label: model.label }
+          : null,
+        size: sizeObj
+          ? { id: sizeObj.id, label: sizeObj.label }
+          : null,
+        baseShell: {
+          sku: baseShellSku || null,
+          shellColor: shellColor
+            ? { id: shellColor.id, name: shellColor.name, sku: shellColor.code }
+            : null,
+          accentColor: accentColor
+            ? { id: accentColor.id, name: accentColor.name, sku: accentColor.code }
+            : null
+        },
+        visor: visor
+          ? { id: visor.id, label: visor.label, sku: visor.sku }
+          : null,
+        accessories: accessoriesChecked,
+        notes: notes
+      };
+
+      const jsonStr = JSON.stringify(config, null, 2);
+      document.getElementById("summaryJson").textContent = jsonStr;
+      document.getElementById("normalizedConfig").value = jsonStr;
+    }
+
+    // === Eventos ===
+    document.addEventListener("DOMContentLoaded", () => {
+      // Poblar selects iniciales
+      populateModelSelect();
+      populateColorSelect(document.getElementById("shellColor"));
+      populateColorSelect(document.getElementById("accentColor"));
+      updateSizeAndShell("");
+      updateVisorSelect("");
+      updateAccessories("");
+      updateSummary();
+
+      document.getElementById("model").addEventListener("change", () => {
+        const modelId = document.getElementById("model").value;
+        updateSizeAndShell(modelId);
+        updateVisorSelect(modelId);
+        updateAccessories(modelId);
+        updateShellSku();
+        updateSummary();
+      });
+
+      document.getElementById("size").addEventListener("change", () => {
+        updateShellSku();
+        updateSummary();
+      });
+
+      document.getElementById("shellColor").addEventListener("change", () => {
+        updateShellSku();
+        updateSummary();
+      });
+
+      document.getElementById("accentColor").addEventListener("change", () => {
+        updateShellSku();
+        updateSummary();
+      });
+
+      document.getElementById("visor").addEventListener("change", updateSummary);
+      document.getElementById("customNotes").addEventListener("input", updateSummary);
+
+      document.getElementById("accessoriesContainer").addEventListener("change", (e) => {
+        if (e.target && e.target.name === "accessories") {
+          updateSummary();
+        }
+      });
+
+      document.getElementById("protos-configurator").addEventListener("submit", (e) => {
+        // Aquí normalmente enviarías el formulario a tu backend.
+        // Esto es solo para demo, evitamos el submit real.
+        e.preventDefault();
+        alert("Configuración preparada. Revisa el JSON normalizado para integrarlo con tu ecommerce.");
+      });
+    });
+  </script>
+</body>
+</html>
